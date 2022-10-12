@@ -1,16 +1,14 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import React, { FC, useState } from "react";
 import SpanNoData from "./spanNoData";
-import {FC, useState} from "react";
-import React from "react";
 
 const IndoorDescription: FC<IndoorProps> = ({ indoor }) => {
     const { t } = useTranslation();
 
     if (indoor) {
-        return <span className="has-text-weight-medium">{t(`indoor.${indoor}`)}</span>
-    } else {
-        return <SpanNoData />
+        return <span className="has-text-weight-medium">{t(`indoor.${indoor}`)}</span>;
     }
+    return <SpanNoData />;
 };
 
 export const IndoorField: FC<IndoorProps> = ({ indoor }) => {
@@ -18,27 +16,27 @@ export const IndoorField: FC<IndoorProps> = ({ indoor }) => {
 
     return (
         <div>
-        <p className="has-text-weight-light has-text-grey mb-1">
-        {t('sidebar.indoor') + "?: "}
-        </p>
-        <IndoorDescription indoor={indoor} />
+            <p className="has-text-weight-light has-text-grey mb-1">
+                {`${t("sidebar.indoor")}?: `}
+            </p>
+            <IndoorDescription indoor={indoor} />
         </div>
-    )
+    );
 };
 
 export function IndoorFormField() {
     const { t } = useTranslation();
     const groupName = "aedIndoor";
     const [indoor, setIndoor] = useState("");
-    const indoorOptions: Array<{value: string, label: string}> = [
-        {"value": "no", "label": t("form.outside")},
-        {"value": "yes", "label": t("form.inside")},
+    const indoorOptions: Array<{ value: string, label: string }> = [
+        { value: "no", label: t("form.outside") },
+        { value: "yes", label: t("form.inside") },
     ];
     return (
         <div>
             <label className="label has-text-weight-semibold pt-2">{t("form.is_indoor")}</label>
             <div className="field">
-                {indoorOptions.map(({value, label}) => (
+                {indoorOptions.map(({ value, label }) => (
                     <>
                         <input
                             key={`radio-${value}-input`}
@@ -51,14 +49,15 @@ export function IndoorFormField() {
                         />
                         <label
                             key={`radio-${value}-label`}
-                            onClick={() => setIndoor(value)}>
+                            onClick={() => setIndoor(value)}
+                        >
                             {label}
                         </label>
                     </>
                 ))}
             </div>
         </div>
-    )
+    );
 }
 
 interface IndoorProps {

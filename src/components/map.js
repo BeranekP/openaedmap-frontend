@@ -1,30 +1,28 @@
-import React, { useRef, useEffect, useState } from 'react';
-import 'maplibre-gl/dist/maplibre-gl.css';
-import './map.css';
-import styleJson from './map_style';
-import SidebarLeft from './sidebar-left';
-import FooterDiv from './footer';
-import { useTranslation } from 'react-i18next';
-import { fetchNodeDataFromOsm } from '../osm';
+import React, { useRef, useEffect, useState } from "react";
+import "maplibre-gl/dist/maplibre-gl.css";
+import "./map.css";
+import { useTranslation } from "react-i18next";
+import maplibreglWorker from "maplibre-gl/dist/maplibre-gl-csp-worker";
+import styleJson from "./map_style";
+import SidebarLeft from "./sidebar-left";
+import FooterDiv from "./footer";
+import { fetchNodeDataFromOsm } from "../osm";
 import ButtonsType from "../model/buttonsType";
 
 // -------------------------------------------------------------------
 // https://github.com/maplibre/maplibre-gl-js/issues/1011
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import maplibregl from '!maplibre-gl';      // ! is important here
-import maplibreglWorker from 'maplibre-gl/dist/maplibre-gl-csp-worker';
-import {initialModalState, ModalType} from "../model/modal";
-import {useAppContext} from "../appContext";
+import maplibregl from "!maplibre-gl"; // ! is important here
+import { initialModalState, ModalType } from "../model/modal";
+import { useAppContext } from "../appContext";
 
 maplibregl.workerClass = maplibreglWorker;
 // -------------------------------------------------------------------
 
-
-
 function fillSidebarWithOsmDataAndShow(nodeId, mapInstance, setSidebarLeftAction, setSidebarLeftData, setSidebarLeftShown, jumpInsteadOfEaseTo) {
     const result = fetchNodeDataFromOsm(nodeId);
-    result.then(data => {
+    result.then((data) => {
         if (data) {
             const zoomLevelForDetailedView = 17;
             const currentZoomLevel = mapInstance.getZoom();
@@ -38,43 +36,41 @@ function fillSidebarWithOsmDataAndShow(nodeId, mapInstance, setSidebarLeftAction
                 } else {
                     mapInstance.easeTo({
                         zoom: zoomLevelForDetailedView,
-                        around: {lon: data.lon, lat: data.lat},
+                        around: { lon: data.lon, lat: data.lat },
                     });
                 }
+            } else if (jumpInsteadOfEaseTo) {
+                mapInstance.jumpTo({
+                    zoom: currentZoomLevel,
+                    center: [data.lon, data.lat],
+                });
             } else {
-                if (jumpInsteadOfEaseTo) {
-                    mapInstance.jumpTo({
-                        zoom: currentZoomLevel,
-                        center: [data.lon, data.lat],
-                    });
-                } else {
-                    mapInstance.easeTo({
-                        zoom: currentZoomLevel,
-                        around: {lon: data.lon, lat: data.lat},
-                    });
-                }
+                mapInstance.easeTo({
+                    zoom: currentZoomLevel,
+                    around: { lon: data.lon, lat: data.lat },
+                });
             }
             setSidebarLeftData(data);
             setSidebarLeftAction("showDetails");
             setSidebarLeftShown(true);
         }
-    })
+    });
 }
 
 function parseHash() {
-    let parameters = {};
-    window.location.hash.slice(1).split('&').forEach(part => {
+    const parameters = {};
+    window.location.hash.slice(1).split("&").forEach((part) => {
         const [key, value] = part.split("=", 2);
         parameters[key] = value;
     });
-    return parameters
+    return parameters;
 }
 
 function getNewHashString(parameters) {
     return Object
         .entries(parameters)
         .map(([key, value]) => `${key}=${value}`)
-        .join("&")
+        .join("&");
 }
 
 export default function Map({ openChangesetId, setOpenChangesetId }) {
@@ -85,9 +81,9 @@ export default function Map({ openChangesetId, setOpenChangesetId }) {
 
     const paramsFromHash = parseHash();
 
-    let initialSidebarData = {};
-    let initialSidebarAction = "init";
-    let initialSidebarVisibility = false;
+    const initialSidebarData = {};
+    const initialSidebarAction = "init";
+    const initialSidebarVisibility = false;
     let initialMapLongitude = -8;
     let initialMapLatitude = 47.74;
     let initialMapZoom = 3;
@@ -101,7 +97,7 @@ export default function Map({ openChangesetId, setOpenChangesetId }) {
     const [lng] = useState(initialMapLongitude);
     const [lat] = useState(initialMapLatitude);
     const [zoom] = useState(initialMapZoom);
-    const controlsLocation = 'bottom-right';
+    const controlsLocation = "bottom-right";
 
     const [marker, setMarker] = useState(null);
 
@@ -112,17 +108,17 @@ export default function Map({ openChangesetId, setOpenChangesetId }) {
     const [footerButtonType, setFooterButtonType] = useState(ButtonsType.AddAED);
 
     const removeNodeIdFromHash = () => {
-        let hashParams = parseHash();
-        delete hashParams["node_id"];
+        const hashParams = parseHash();
+        delete hashParams.node_id;
         window.location.hash = getNewHashString(hashParams);
-    }
+    };
 
     const deleteMarker = () => {
         if (marker !== null) {
             marker.remove();
             setMarker(null);
         }
-    }
+    };
 
     const closeSidebarLeft = () => {
         setSidebarLeftShown(false);
@@ -132,12 +128,13 @@ export default function Map({ openChangesetId, setOpenChangesetId }) {
     };
 
     const checkConditionsThenCall = (callable) => {
-        if (!auth.authenticated())
-            setModalState({...initialModalState, visible: true, type: ModalType.NeedToLogin});
-        else if (map.current.getZoom() < 15)
-            setModalState({...initialModalState, visible: true, type: ModalType.NeedMoreZoom, currentZoom: map.current.getZoom()})
-        else callable()
-    }
+        if (!auth.authenticated()) setModalState({ ...initialModalState, visible: true, type: ModalType.NeedToLogin });
+        else if (map.current.getZoom() < 15) {
+            setModalState({
+                ...initialModalState, visible: true, type: ModalType.NeedMoreZoom, currentZoom: map.current.getZoom(),
+            });
+        } else callable();
+    };
 
     const mobileStepOne = () => {
         deleteMarker();
@@ -155,23 +152,23 @@ export default function Map({ openChangesetId, setOpenChangesetId }) {
                 draggable: true,
                 color: markerColour,
             })
-            .setLngLat(initialCoordinates)
-            .setPopup(new maplibregl.Popup().setHTML(t("form.marker_popup_text")))
-            .addTo(map.current)
-            .togglePopup()
+                .setLngLat(initialCoordinates)
+                .setPopup(new maplibregl.Popup().setHTML(t("form.marker_popup_text")))
+                .addTo(map.current)
+                .togglePopup(),
         );
-    }
+    };
 
     const mobileCancel = () => {
         deleteMarker();
         setSidebarLeftShown(false);
         setFooterButtonType(ButtonsType.AddAED);
-    }
+    };
 
     const mobileStepTwo = () => {
         setSidebarLeftShown(true);
         setFooterButtonType(ButtonsType.None);
-    }
+    };
 
     const openForm = () => {
         deleteMarker();
@@ -189,24 +186,24 @@ export default function Map({ openChangesetId, setOpenChangesetId }) {
                 draggable: true,
                 color: markerColour,
             })
-            .setLngLat(initialCoordinates)
-            .setPopup(new maplibregl.Popup().setHTML(t("form.marker_popup_text")))
-            .addTo(map.current)
-            .togglePopup()
+                .setLngLat(initialCoordinates)
+                .setPopup(new maplibregl.Popup().setHTML(t("form.marker_popup_text")))
+                .addTo(map.current)
+                .togglePopup(),
         );
-    }
+    };
 
     useEffect(() => {
-        if (map.current) return; //stops map from initializing more than once
+        if (map.current) return; // stops map from initializing more than once
         map.current = new maplibregl.Map({
-          container: mapContainer.current,
-          hash: hash4MapName,
-          style: styleJson,
-          center: [lng, lat],
-          zoom: zoom,
-          minZoom: 3,
-          maxZoom: 19,
-          maplibreLogo: false,
+            container: mapContainer.current,
+            hash: hash4MapName,
+            style: styleJson,
+            center: [lng, lat],
+            zoom,
+            minZoom: 3,
+            maxZoom: 19,
+            maplibreLogo: false,
         });
 
         // how fast mouse scroll wheel zooms
@@ -218,14 +215,14 @@ export default function Map({ openChangesetId, setOpenChangesetId }) {
         // disable map rotation using touch rotation gesture
         map.current.touchZoomRotate.disableRotation();
 
-        let control = new maplibregl.NavigationControl({
-            showCompass: false
+        const control = new maplibregl.NavigationControl({
+            showCompass: false,
         });
 
-        let geolocate = new maplibregl.GeolocateControl({
+        const geolocate = new maplibregl.GeolocateControl({
             positionOptions: {
-                enableHighAccuracy: true
-            }
+                enableHighAccuracy: true,
+            },
         });
 
         // Map controls
@@ -233,32 +230,32 @@ export default function Map({ openChangesetId, setOpenChangesetId }) {
         map.current.addControl(geolocate, controlsLocation);
 
         // Map interaction
-        map.current.on('mouseenter', 'clustered-circle', () => {
-            map.current.getCanvas().style.cursor = 'pointer';
+        map.current.on("mouseenter", "clustered-circle", () => {
+            map.current.getCanvas().style.cursor = "pointer";
         });
-        map.current.on('mouseleave', 'clustered-circle', () => {
-            map.current.getCanvas().style.cursor = '';
+        map.current.on("mouseleave", "clustered-circle", () => {
+            map.current.getCanvas().style.cursor = "";
         });
-        map.current.on('mouseenter', 'unclustered', () => {
-            map.current.getCanvas().style.cursor = 'pointer';
+        map.current.on("mouseenter", "unclustered", () => {
+            map.current.getCanvas().style.cursor = "pointer";
         });
-        map.current.on('mouseleave', 'unclustered', () => {
-            map.current.getCanvas().style.cursor = '';
+        map.current.on("mouseleave", "unclustered", () => {
+            map.current.getCanvas().style.cursor = "";
         });
 
         // zoom to cluster on click
-        map.current.on('click', 'clustered-circle', function (e) {
-            var features = map.current.queryRenderedFeatures(e.point, {
-                layers: ['clustered-circle']
+        map.current.on("click", "clustered-circle", (e) => {
+            const features = map.current.queryRenderedFeatures(e.point, {
+                layers: ["clustered-circle"],
             });
-            var zoom = map.current.getZoom();
+            const zoom = map.current.getZoom();
             map.current.easeTo({
                 center: features[0].geometry.coordinates,
-                zoom: zoom + 2
+                zoom: zoom + 2,
             });
         });
         // show sidebar on single element click
-        map.current.on('click', 'unclustered', function (e) {
+        map.current.on("click", "unclustered", (e) => {
             console.log("Clicked on object with properties: ", e.features[0].properties);
             if (e.features[0].properties !== undefined) {
                 const osm_node_id = e.features[0].properties.osm_id;
@@ -277,30 +274,32 @@ export default function Map({ openChangesetId, setOpenChangesetId }) {
 
         // if direct link to osm node then get its data and zoom in
         const paramsFromHash = parseHash();
-        if (paramsFromHash["node_id"]) fillSidebarWithOsmDataAndShow(paramsFromHash["node_id"], map.current, setSidebarLeftAction, setSidebarLeftData, setSidebarLeftShown, true);
+        if (paramsFromHash.node_id) fillSidebarWithOsmDataAndShow(paramsFromHash.node_id, map.current, setSidebarLeftAction, setSidebarLeftData, setSidebarLeftShown, true);
     }, [lat, lng, zoom, setSidebarLeftAction, setSidebarLeftData, setSidebarLeftShown]);
 
     return (
         <>
-        { sidebarLeftShown && <SidebarLeft
-                                action={sidebarLeftAction}
-                                data={sidebarLeftData}
-                                closeSidebar={closeSidebarLeft}
-                                visible={sidebarLeftShown}
-                                marker={marker}
-                                openChangesetId={openChangesetId}
-                                setOpenChangesetId={setOpenChangesetId}
-                              />}
-        <div className="map-wrap">
-            <div ref={mapContainer} className="map" />
-        </div>
-        <FooterDiv
-            openForm={() => checkConditionsThenCall(openForm)}
-            mobileStepOne={() => checkConditionsThenCall(mobileStepOne)}
-            mobileCancel={mobileCancel}
-            mobileStepTwo={mobileStepTwo}
-            buttonsConfiguration={footerButtonType}
-        />
+            { sidebarLeftShown && (
+                <SidebarLeft
+                    action={sidebarLeftAction}
+                    data={sidebarLeftData}
+                    closeSidebar={closeSidebarLeft}
+                    visible={sidebarLeftShown}
+                    marker={marker}
+                    openChangesetId={openChangesetId}
+                    setOpenChangesetId={setOpenChangesetId}
+                />
+            )}
+            <div className="map-wrap">
+                <div ref={mapContainer} className="map" />
+            </div>
+            <FooterDiv
+                openForm={() => checkConditionsThenCall(openForm)}
+                mobileStepOne={() => checkConditionsThenCall(mobileStepOne)}
+                mobileCancel={mobileCancel}
+                mobileStepTwo={mobileStepTwo}
+                buttonsConfiguration={footerButtonType}
+            />
         </>
     );
 }

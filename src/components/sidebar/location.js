@@ -1,13 +1,12 @@
-import { useTranslation } from 'react-i18next';
-import SpanNoData from "./spanNoData";
+import { useTranslation } from "react-i18next";
 import React from "react";
+import SpanNoData from "./spanNoData";
 
 function LocationDescription({ description }) {
     if (description) {
-        return <span className="has-text-weight-medium">{description}</span>
-    } else {
-        return <SpanNoData />
+        return <span className="has-text-weight-medium">{description}</span>;
     }
+    return <SpanNoData />;
 }
 
 export function LocationField({ description }) {
@@ -15,12 +14,12 @@ export function LocationField({ description }) {
 
     return (
         <div>
-        <p className="has-text-weight-light has-text-grey mb-1">
-            {t("sidebar.location") + ": "}
-        </p>
-        <LocationDescription description={description} />
+            <p className="has-text-weight-light has-text-grey mb-1">
+                {`${t("sidebar.location")}: `}
+            </p>
+            <LocationDescription description={description} />
         </div>
-    )
+    );
 }
 
 export function LocationFormField({ lang }) {
@@ -28,11 +27,16 @@ export function LocationFormField({ lang }) {
 
     return (
         <div className="field pt-2">
-            <label className="label has-text-weight-semibold">{t('form.location') + ` (${lang}):`}</label>
+            <label className="label has-text-weight-semibold">{`${t("form.location")} (${lang}):`}</label>
             <div className="control">
-                <textarea tag={"defibrillator:location" + (lang ? ":" + lang : "")} name="aedLocation" className="textarea is-success" rows="1"
-                    placeholder={t("form.location_example")}></textarea>
+                <textarea
+                    tag={`defibrillator:location${lang ? `:${lang}` : ""}`}
+                    name="aedLocation"
+                    className="textarea is-success"
+                    rows="1"
+                    placeholder={t("form.location_example")}
+                />
             </div>
         </div>
-    )
+    );
 }

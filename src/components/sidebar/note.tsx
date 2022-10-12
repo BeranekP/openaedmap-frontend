@@ -1,13 +1,12 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import React, { FC } from "react";
 import SpanNoData from "./spanNoData";
-import React, {FC} from "react";
 
 const NoteDescription: FC<NoteProps> = ({ note }) => {
     if (note) {
-        return <span className="has-text-weight-medium">{note}</span>
-    } else {
-        return <SpanNoData />
+        return <span className="has-text-weight-medium">{note}</span>;
     }
+    return <SpanNoData />;
 };
 
 export const NoteField: FC<NoteProps> = ({ note }) => {
@@ -15,10 +14,10 @@ export const NoteField: FC<NoteProps> = ({ note }) => {
 
     return (
         <p className="has-text-weight-light">
-            {t('sidebar.note') + ": "}
+            {`${t("sidebar.note")}: `}
             <NoteDescription note={note} />
         </p>
-    )
+    );
 };
 
 interface NoteProps {
