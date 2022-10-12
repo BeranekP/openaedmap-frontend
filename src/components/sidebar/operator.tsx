@@ -10,7 +10,7 @@ const OperatorDescription: FC<OperatorProps> = ({ operator }) => {
     }
 };
 
-export const OperatorField: FC<OperatorProps> = ({ operator }) => {
+const OperatorField: FC<OperatorProps> = ({ operator }) => {
     const { t } = useTranslation();
 
     return (
@@ -26,3 +26,5 @@ export const OperatorField: FC<OperatorProps> = ({ operator }) => {
 interface OperatorProps {
     operator: string,
 }
+
+export default OperatorField;

@@ -6,7 +6,7 @@ import SidebarLeft from './sidebar-left';
 import FooterDiv from './footer';
 import { useTranslation } from 'react-i18next';
 import { fetchNodeDataFromOsm } from '../osm';
-import {ButtonsType} from "../model/buttonsType";
+import ButtonsType from "../model/buttonsType";
 
 // -------------------------------------------------------------------
 // https://github.com/maplibre/maplibre-gl-js/issues/1011

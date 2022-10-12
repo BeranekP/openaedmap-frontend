@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Icon from '@mdi/react'
 import {mdiCancel, mdiArrowRightBold, mdiMapMarkerPlus} from '@mdi/js'
 import './footer.css'
-import {ButtonsType} from "../model/buttonsType";
+import ButtonsType from "../model/buttonsType";
 
 
 const FooterDiv: FC<FooterDivProps> = ({ openForm, mobileStepOne, mobileCancel, mobileStepTwo, buttonsConfiguration }) => {

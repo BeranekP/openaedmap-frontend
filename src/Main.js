@@ -10,7 +10,7 @@ import Map from './components/map';
 import { osmAuth } from 'osm-auth';
 import {initialModalState, ModalType} from './model/modal'
 import {AppContext} from './appContext';
-import {CustomModal} from "./components/modal";
+import CustomModal from "./components/modal";
 import {updateOsmUsernameState} from "./osm";
 
 

@@ -57,7 +57,7 @@ const ModalContent: FC<{}> = () => {
     }
 };
 
-export const CustomModal: FC<{}> = () => {
+const CustomModal: FC<{}> = () => {
     const { t } = useTranslation();
     const { modalState, setModalState } = useAppContext();
 
@@ -75,3 +75,5 @@ export const CustomModal: FC<{}> = () => {
         </Modal>
     )
 };
+
+export default CustomModal;

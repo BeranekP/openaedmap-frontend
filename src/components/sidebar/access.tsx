@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import React, {useState} from "react";
 
-export function AccessFormField() {
+export default function AccessFormField() {
     const { t } = useTranslation();
     const groupName = "aedAccess";
     const [access, setAccess] = useState("");

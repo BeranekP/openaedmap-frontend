@@ -15,12 +15,12 @@ import {
   GoogleMapsNavigationButton
 } from './sidebar/buttons';
 import { ContactNumberField, ContactPhoneFormField } from "./sidebar/contactNumber";
-import { DescriptionField } from "./sidebar/description";
+import DescriptionField from "./sidebar/description";
 import { IndoorField, IndoorFormField } from "./sidebar/indoor";
 import { LocationField, LocationFormField } from "./sidebar/location";
-import { OpeningHoursField } from "./sidebar/openingHours";
-import { OperatorField } from "./sidebar/operator";
-import { AccessFormField } from "./sidebar/access";
+import OpeningHoursField from "./sidebar/openingHours";
+import OperatorField from "./sidebar/operator";
+import AccessFormField from "./sidebar/access";
 import { getOpenChangesetId, addDefibrillatorToOSM } from '../osm';
 import Icon from '@mdi/react'
 import { mdiMapMarkerOutline, mdiClockOutline, mdiPhoneOutline, mdiAccountSupervisorOutline, mdiInformationOutline, mdiHomeRoof } from '@mdi/js';

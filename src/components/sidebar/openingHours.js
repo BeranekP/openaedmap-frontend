@@ -66,7 +66,7 @@ function OpeningHoursDescription({ openingHours }) {
     }
 }
 
-export function OpeningHoursField({ openingHours }) {
+export default function OpeningHoursField({ openingHours }) {
     const { t } = useTranslation();
 
     return (
